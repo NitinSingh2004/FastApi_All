@@ -1,7 +1,11 @@
+# FastAPI Production-Ready Boilerplate
+
+A robust, high-performance, and secure FastAPI boilerplate equipped with industry-standard production features: **JWT Authentication**, **Password Hashing**, **Redis Caching**, **Rate Limiting**, **PostgreSQL Database Storage**, and **Asynchronous Connection Pooling**.
 
 ## 🚀 Features
 
-* **Database Engine:** Reliable, atomic operations backed by **PostgreSQL** alongside modern async ORM connections.
+* **Database Connection Pooling:** Managed async connection pools to efficiently handle concurrent database traffic, minimize handshake overhead, and prevent connection exhaustion under heavy loads.
+* **Database Engine:** Reliable, atomic operations backed by **PostgreSQL** utilizing modern async drivers.
 * **Authentication & Authorization:** Secure user authentication using **JWT (JSON Web Tokens)** with access and refresh token flows.
 * **Password Security:** Secure password hashing using **Argon2** / **Bcrypt** via `passlib`.
 * **Rate Limiting:** IP and user-based rate limiting powered by **Redis** to protect against Brute Force and DDoS attacks.
@@ -14,7 +18,8 @@
 
 * **Framework:** [FastAPI](https://fastapi.tiangolo.com/)
 * **ASGI Server:** [Uvicorn](https://www.uvicorn.org/)
-* **Database:** [PostgreSQL](https://www.postgresql.org/)
+* **Database Engine:** [PostgreSQL](https://www.postgresql.org/)
+* **Async DB Driver:** [asyncpg](https://magicstack.github.io/asyncpg/) (Provides native high-performance pooling)
 * **In-Memory Cache (Rate Limit):** [Redis](https://redis.io/)
 * **Database ORM:** [SQLAlchemy (Async Engine)](https://www.sqlalchemy.org/) / [SQLModel](https://sqlmodel.tiangolo.com/)
 
