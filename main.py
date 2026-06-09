@@ -1,4 +1,5 @@
 
+from psycopg2.pool import SimpleConnectionPool
 import os
 from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -76,20 +77,50 @@ app.add_exception_handler(
 app.add_middleware(SlowAPIMiddleware)
 hash = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-db = psycopg2.connect(
+# db = psycopg2.connect(
+#     host="localhost",
+#     database="Nitin",
+#     user="postgres",
+#     password="Nitin"
+# )
+
+
+db_pool = SimpleConnectionPool(
+    minconn=1,
+    maxconn=10,
     host="localhost",
-    database="Nitin",
+    database="mydb",
     user="postgres",
-    password="Nitin"
+    password="password",
+    port=5432
 )
+
+# def get_db():
+#     try:
+#         conn = db
+#         yield conn
+#     finally:
+#         pass
+
 
 
 def get_db():
+    conn = None
+
     try:
-        conn = db
+        conn = db_pool.getconn()
         yield conn
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
     finally:
-        pass
+        if conn:
+            print("Returning connection to pool")
+            db_pool.putconn(conn)
 
 
 def create_token(user_id: str, role: str):
@@ -300,9 +331,10 @@ def query_embeddings(query: str):
         return {"response": response}
     
     except HTTPException as http_exc:
-        raise http_exc  # Re-raise HTTP exceptions to be handled by FastAPI
+        raise http_exc  
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while querying the index: {str(e)}"
         )
+
